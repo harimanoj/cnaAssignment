@@ -74,7 +74,7 @@ public class SKUController {
 				}
 				return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
 			}
-			SKU updatedSKU = new SKU();
+
 			for (SKU sku : skus) {
 				if (sku.getId() == id) {
 					sku.setCount(newSKU.getCount());
@@ -82,8 +82,7 @@ public class SKUController {
 					sku.setName(newSKU.getName());
 					sku.setPrice(newSKU.getPrice());
 					sku.setProductId(newSKU.getProductId());
-					updatedSKU = sku;
-					return new ResponseEntity<SKU>(updatedSKU, HttpStatus.OK);
+					return new ResponseEntity<SKU>(sku, HttpStatus.OK);
 				}
 				
 			}
