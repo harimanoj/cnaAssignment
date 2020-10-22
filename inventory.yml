@@ -1,0 +1,199 @@
+openapi: 3.0.1
+info:
+  title: Inventory API
+  description: This is a simple inventory API
+  version: 1.0.0
+servers:
+- url: http://localhost:8001/
+tags:
+- name: sku
+  description: Inventory stock keeping unit (SKU)
+paths:
+  /skus:
+    get:
+      tags:
+      - sku
+      summary: List available SKUs
+      description: Lists all available SKUs
+      operationId: getSKUs
+      responses:
+        200:
+          description: List of SKUs. If no SKUs are found return and empty array.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/SKU'
+    post:
+      tags:
+      - sku
+      summary: Add a new SKU
+      description: Add a new SKU to the inventory
+      operationId: addSKU
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SKUPayload'
+        required: true
+      responses:
+        201:
+          description: New SKU added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SKU'
+        400:
+          description: Invalid input
+          content:
+            plain/text:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+  /skus/{id}:
+    parameters:
+      - $ref: '#/components/parameters/skuId'
+    get:
+      tags:
+      - sku
+      summary: Get SKU
+      description: Display a single SKU
+      operationId: getSKU
+      responses:
+        200:
+          description: SKU with id
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SKU'
+        404:
+          description: SKU Not found
+          content:
+            plain/text:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    put:
+      tags:
+      - sku
+      summary: Update a SKU
+      description: Updates the SKU
+      operationId: updateSKU
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SKUPayload'
+        required: true
+      responses:
+        200:
+          description: Updated SKU
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SKU'
+        400:
+          description: Invalid SKU payload
+          content:
+            plain/text:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        404:
+          description: SKU not found
+          content:
+            plain/text:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+    delete:
+      tags:
+      - sku
+      summary: Delete SKU
+      description: Deletes a SKU from inventory
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SKU'
+        404:
+          description: SKU not found
+          content:
+            plain/text:
+              schema:
+                $ref: '#/components/schemas/NotFound'
+components:
+  schemas:
+    ID:
+      type: integer
+      description: Unique identifier
+      format: int64
+      example: 1
+    ErrorMessage:
+      type: string
+      description: Error message string
+      example: productId is mandatory
+    NotFound:
+      type: string
+      description: Error message when item not found
+      example: SKU not found
+    SKUPayload:
+      required:
+      - productId
+      type: object
+      properties:
+        productId:
+          type: number
+          description: Reference to the product
+          format: int64
+          example: 1.0
+        name:
+          maxLength: 100
+          type: string
+          description: Name of the SKU
+          example: Pencils (Red)
+        description:
+          maxLength: 500
+          type: string
+          description: Detailed SKU description
+          example: Awesome pencils (Red) Pack of 10
+        price:
+          type: number
+          description: Price of the SKU
+          format: float
+          example: 4.5
+        count:
+          type: number
+          description: Number of items of this SKU available in inventory
+          format: int64
+          example: 5.0
+    SKU:
+      type: object
+      allOf:
+      - type: object
+        properties:
+          id: 
+            $ref: '#/components/schemas/ID'
+      - $ref: '#/components/schemas/SKUPayload'
+  parameters:
+    skuId:
+      name: id
+      in: path
+      description: SKU unique identifier
+      required: true
+      schema:
+        type: number
+        format: int64
+    productId:
+      name: id
+      in: path
+      description: Product unique identifier
+      required: true
+      schema:
+        type: number
+        format: int64
+    category:
+      name: category
+      in: query
+      description: category on which to filter on
+      schema:
+        type: string
