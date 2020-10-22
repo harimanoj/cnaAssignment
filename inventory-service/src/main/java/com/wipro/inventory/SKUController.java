@@ -83,11 +83,12 @@ public class SKUController {
 					sku.setPrice(newSKU.getPrice());
 					sku.setProductId(newSKU.getProductId());
 					updatedSKU = sku;
-					break;
+					return new ResponseEntity<SKU>(updatedSKU, HttpStatus.OK);
 				}
-				return new ResponseEntity<String>("SKU not Found", HttpStatus.NOT_FOUND);
+				
 			}
-			return new ResponseEntity<SKU>(updatedSKU, HttpStatus.OK);
+			return new ResponseEntity<String>("SKU not Found", HttpStatus.NOT_FOUND);
+			
 		} catch (Exception e) {
 			return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
